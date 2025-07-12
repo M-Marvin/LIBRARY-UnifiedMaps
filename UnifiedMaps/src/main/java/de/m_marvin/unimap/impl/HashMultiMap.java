@@ -197,7 +197,6 @@ public class HashMultiMap<K, V> extends AbstractMap<K, V> implements MultiMap<K,
 							if (!hasNext()) throw new NoSuchElementException();
 							if (valueIter == null || !valueIter.hasNext()) {
 								key = keyIter.next();
-								System.out.println("it key: " + key + " > " + HashMultiMap.this.map.get(key));
 								valueIter = HashMultiMap.this.map.get(key).iterator();
 							}
 							return new Map.Entry<K, V>() {
