@@ -1,4 +1,4 @@
-package de.m_marvin.unimap.api;
+package de.m_marvin.unimap.types;
 
 import java.util.List;
 

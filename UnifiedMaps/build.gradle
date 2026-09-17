@@ -2,7 +2,7 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-version = '0.2-beta'
+version = '0.3-beta'
 
 // Add additional content to the manifest
 tasks.named('jar') {
@@ -17,6 +17,14 @@ java {
 	sourceCompatibility = "1.17"
 	targetCompatibility = "1.17"
     withSourcesJar()
+}
+
+repositories {
+	mavenCentral();
+}
+
+dependencies {
+	implementation("it.unimi.dsi:fastutil:8.5.19");
 }
 
 publishing {
