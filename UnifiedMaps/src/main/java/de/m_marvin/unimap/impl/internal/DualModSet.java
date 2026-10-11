@@ -5,16 +5,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-
-import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
+import java.util.function.Function;
 
 public class DualModSet<E> extends AbstractSet<E> implements Set<E> {
 	
 	protected Collection<E> backing;
-	protected Object2BooleanFunction<E> addMod;
-	protected Object2BooleanFunction<Object> removeMod;
+	protected Function<E, Boolean> addMod;
+	protected Function<Object, Boolean> removeMod;
 	
-	public DualModSet(Collection<E> backing, Object2BooleanFunction<E> addMod, Object2BooleanFunction<Object> removeMod) {
+	public DualModSet(Collection<E> backing, Function<E, Boolean> addMod, Function<Object, Boolean> removeMod) {
 		this.backing = backing == null ? Collections.emptyList() : backing;
 		this.addMod = addMod;
 		this.removeMod = removeMod;
