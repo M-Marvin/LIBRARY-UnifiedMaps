@@ -29,15 +29,13 @@ public class Buildfile extends JavaBuildScript {
 	@Override
 	public void dependencies() {
 		
-		dependencies.implementation("it.unimi.dsi:fastutil:8.5.19");
-		
 	}
 	
 	@Override
 	public void publishing() {
 		super.publishing();
 		
-		publishMaven.coordinates("de.m_marvin.unimap:unimap:" + version);
+		publishMavenLocal.coordinates("de.m_marvin.unimap:unimap:" + version);
 		
 	}
 	
