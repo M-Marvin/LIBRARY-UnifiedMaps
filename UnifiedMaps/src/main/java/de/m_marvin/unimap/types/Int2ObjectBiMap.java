@@ -5,6 +5,7 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 
+// TODO update comments
 /**
  * A extension of the {@link Map} which allows to retrieve keys by their values.
  * @param <K> The type of the keys
