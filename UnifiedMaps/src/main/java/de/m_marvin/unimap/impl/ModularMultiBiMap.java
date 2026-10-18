@@ -49,16 +49,11 @@ public class ModularMultiBiMap<K, V>extends AbstractMap<K, V> implements MultiBi
 		return key;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<K> removeValues(V value) {
 		Collection<K> keys = this.v2k.removeAll(value);
 		keys.forEach(key -> this.k2v.remove(key, value));
-		return new DualModCollection<K>(
-				keys,
-				k -> this.k2v.put((K) k, (V) value) != value, 
-				k -> this.k2v.remove(k, value)
-		);
+		return keys;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -66,16 +61,6 @@ public class ModularMultiBiMap<K, V>extends AbstractMap<K, V> implements MultiBi
 	public Collection<V> getAll(Object key) {
 		return new DualModCollection<V>(
 				this.k2v.getAll(key), 
-				v -> this.v2k.put((V) v, (K) key) != key, 
-				v -> this.v2k.remove(v, key)
-		);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<V> getAll(K key, boolean makeIfNull) {
-		return new DualModCollection<V>(
-				this.k2v.getAll(key, makeIfNull), 
 				v -> this.v2k.put((V) v, (K) key) != key, 
 				v -> this.v2k.remove(v, key)
 		);
@@ -91,7 +76,7 @@ public class ModularMultiBiMap<K, V>extends AbstractMap<K, V> implements MultiBi
 
 	@Override
 	public boolean putAll(K key, Collection<V> values) {
-		return getAll(key, true).addAll(values);
+		return getAll(key).addAll(values);
 	}
 
 	@Override

@@ -2,10 +2,12 @@ package de.m_marvin.unimap.impl;
 
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import de.m_marvin.unimap.impl.internal.DualModSet;
 import de.m_marvin.unimap.impl.internal.Map2FlatEntrySet;
 import de.m_marvin.unimap.impl.internal.SetCollection2FlatCollection;
 import de.m_marvin.unimap.types.MultiMap;
@@ -20,36 +22,45 @@ public class ModularMultiMap<K, V> extends AbstractMap<K, V> implements MultiMap
 		this.setFactory = setFactory;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<V> getAll(Object key) {
-		return this.map.get(key);
-	}
-	
-	@Override
-	public Collection<V> getAll(K key, boolean makeIfNull) {
-		Set<V> values = this.map.get(key);
-		if (makeIfNull && values == null) {
-			values = this.setFactory.get();
-			this.map.put(key, values);
-		}
-		return values;
+		Set<V> values = this.map.get(key);		
+		if (values != null)
+			return values;
+		Set<V> values2 = this.setFactory.get();
+		return new DualModSet<V>(
+				values2, 
+				e -> {
+					if (!values2.isEmpty())
+						this.map.put((K) key, values2);
+					return true;
+				}, 
+				e -> {
+					if (values2.isEmpty())
+						this.map.remove(key);
+					return true;
+				}
+		);
 	}
 	
 	@Override
 	public Collection<V> replace(K key, Collection<V> values) {
 		Set<V> entries = this.setFactory.get();
 		entries.addAll(values);
-		return this.map.put(key, entries);
+		Collection<V> replaced = this.map.put(key, entries);
+		return replaced != null ? Collections.unmodifiableCollection(replaced) : Collections.emptySet();
 	}
 
 	@Override
 	public boolean putAll(K key, Collection<V> values) {
-		return getAll(key, true).addAll(values);
+		return getAll(key).addAll(values);
 	}
 
 	@Override
 	public Collection<V> removeAll(Object key) {
-		return this.map.remove(key);
+		Collection<V> removed = this.map.remove(key);
+		return removed != null ? Collections.unmodifiableCollection(removed) : Collections.emptySet();
 	}
 
 	@Override
@@ -87,7 +98,7 @@ public class ModularMultiMap<K, V> extends AbstractMap<K, V> implements MultiMap
 
 	@Override
 	public V put(K key, V value) {
-		Collection<V> entries = getAll(key, true);
+		Collection<V> entries = getAll(key);
 		entries.add(value);
 		return null;
 	}
